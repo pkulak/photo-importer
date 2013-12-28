@@ -5,14 +5,22 @@ var access_token;
 
 $(function() {
   chrome.mediaGalleries.getMediaFileSystems({interactive: "if_needed"}, function(filesystems) {
+    var found = false;
+
     $(filesystems).each(function() {
       var info = chrome.mediaGalleries.getMediaFileSystemMetadata(this);
 
       if (info.isRemovable) {
         reader = this.root.createReader();
         reader.readEntries(scanGallery);
+        found = true;
       }
     });
+
+    if (!found) {
+      showMessage("No media connected.");
+      hideActions();
+    }
   });
 
   $("button").click(function() {
