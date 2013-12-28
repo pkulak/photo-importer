@@ -1,7 +1,7 @@
 {
   "name": "Photo Importer",
   "description": "Import photos from your camera to a local folder with ease.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "manifest_version": 2,
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoSFEMCtX90Rw9ooV1zzoZHgZj3K7z5ZlMkP49FiMsLeaR1mDcXRzA2AV4/Ropb1Wxw9hU0xFKHWtibr19JsoB6tL3KBglwn7arhQT3FcY2YIUmcB2LK5sryTac0lf2dQjYvGbpvYA4/jqpmdjmRGvcHSISELMTCXQu++xCaD5oQPw7RMmXtuWQyZtHap3lZ1qmTX2ioa48m/KHZLQh1PE4rhMFbcbINrGJNhO5BhLM1BXSHD5UZV9BLbwFz5nOzv+I7rIE1Ju+4A6BrCgJ54k3x4wgyNy58ozk0vvEMLpfyis1Ru1JXFKCm0YS4ozuXvBxZwo/jTHmn0mKMpNGB8rQIDAQAB",
   "app": {
