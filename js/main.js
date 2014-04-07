@@ -106,7 +106,13 @@ function uploadFile(fileEntry, folder) {
     });
 
     uploader.onComplete = function() {
-      delete uploader.f
+      if ($("#remove").val() == "Yes") {
+        fileEntry.remove(function() {
+          console.log("removed file");
+        });
+      }
+
+      delete uploader.f;
       inProgress--;
     }
 

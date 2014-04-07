@@ -10,7 +10,7 @@
     }
   },
   "permissions": [{
-      "mediaGalleries": ["read", "allAutoDetected"] 
+      "mediaGalleries": ["read", "delete", "allAutoDetected"] 
   }, "identity"],
   "oauth2": {
     "client_id": "416869675733-plof1094pd36u1sl308n15h045tvkv8b.apps.googleusercontent.com",
