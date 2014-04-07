@@ -1,7 +1,9 @@
 var files = [];
+var total = 0;
 var dirs = [];
 var reader;
 var access_token;
+var inProgress = 0;
 
 $(function() {
   chrome.mediaGalleries.getMediaFileSystems({interactive: "if_needed"}, function(filesystems) {
@@ -42,7 +44,7 @@ $(function() {
       getPhotosFolder(function(photos) {
         if (photos) {
           createFolderUnder($("#title").val(), photos, function(folder) {
-            uploadFiles(folder, 0);
+            uploadFiles(folder);
           });
         } else {
           showError("No \"Photos\" folder found in your Google Drive top directory.");
@@ -51,18 +53,45 @@ $(function() {
         }
       });
     });
+
+    // Gotta make sure our auth token stays valid.
+    window.setInterval(function() {
+      chrome.identity.removeCachedAuthToken({token: access_token}, function() {
+        chrome.identity.getAuthToken({interactive: false}, function(token) {
+          if (token) {
+            console.log("Refreshed the token: " + token);
+            access_token = token;
+          } else {
+            console.log("Could not refresh token!");
+          }
+        });
+      });
+    }, 600000);
   });
 });
 
-function uploadFiles(folder, index) {
-  if (index == files.length) {
-    showMessage("All done!!!");
-    return;
-  }
+function uploadFiles(folder) {
+  setInterval(function() {
+    if (inProgress == -1) {
+      return;
+    }
 
-  showMessage("Importing " + (index + 1) + " of " + files.length);
+    if (files.length == 0 && inProgress == 0) {
+      showMessage("All done!!!");
+      return;
+    }
 
-  files[index].file(function(f) {
+    if (files.length > 0 && inProgress < 4) {
+      showMessage("Importing " + (total - files.length + 1) + " of " + total);
+      uploadFile(files.shift(), folder);
+    }
+  }, 1000)
+}
+
+function uploadFile(fileEntry, folder) {
+  inProgress++;
+
+  fileEntry.file(function(f) {
     var uploader = new MediaUploader({
       file: f,
       token: access_token,
@@ -77,10 +106,12 @@ function uploadFiles(folder, index) {
     });
 
     uploader.onComplete = function() {
-      uploadFiles(folder, index + 1);
+      delete uploader.f
+      inProgress--;
     }
 
     uploader.onError = function() {
+      inProgress = -1;
       showMessage("Could not upload file.");
       showActions();
     }
@@ -147,6 +178,7 @@ function scanGallery(entries) {
   for (var i = 0; i < entries.length; i++) {
     if (entries[i].isFile) {
       files.push(entries[i]);
+      total++;
     } else if (entries[i].isDirectory) {
       dirs.push(entries[i]);
     }
@@ -158,7 +190,7 @@ function scanGallery(entries) {
 function showImages() {
   showMessage("Found " + files.length + " images.");
 
-  $(files).each(function() {
+  $(files.slice(0, 10)).each(function() {
     var fs = this;
     var img = $("<img></img>");
     $("#images").append(img);
